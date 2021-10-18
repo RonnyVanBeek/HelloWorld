@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  Build:
 
     runs-on: ubuntu-latest
 
@@ -23,3 +23,36 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+      
+  DeployDev:
+    name: Deploy to Dev
+    needs: [Build]
+    runs-on: ubuntu-latest
+    environment:
+      name: Development
+      url: 'http://dev.mijnhosting.be'
+    steps:
+      - name: Deploy
+        run: echo I am deploying your application!
+      
+  DeployStaging:
+    name: Deploy to staging
+    needs: [Build]
+    runs-on: ubuntu-latest
+    environment:
+      name: Staging
+      url: 'http://stage.mijnhosting.be'
+    steps:
+      - name: Deploy
+        run: echo I am deploying your application to staging!
+    
+  DeployProduction:
+    name: Deploy to production
+    needs: [DeployStaging]
+    runs-on: ubuntu-latest
+    environment:
+      name: Production
+      url: 'http://prod.mijnhosting.be'
+    steps:
+      - name: Deploy
+        run: echo I am deploying your application to Production!
